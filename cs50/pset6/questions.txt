@@ -1,0 +1,43 @@
+0.  A term used to describe a lung disease caused by silica dust.
+	
+1.  Returns resource usage measures.
+
+2.  16
+	
+3.  To keep the calls in line with the pointer argument required by getrusage.
+
+4.  In main's for loop for loading and checking words:
+	a new char is read from FILE* fp while the char is not the eof marker.
+	It if first tested to see if it an allowed character, if so it is added 
+	to the 'word' char array and the 'word' character array index is incremented.
+	
+	If the index is larger than max word LENGTH the rest of the word is consumed 
+	until either EOF or the character is not a letter (probably '\n', marking new line).
+	
+	If the character is a number the word is also consumed in the same manner.
+	
+	Lastly after being filtered through all those tests, if the word length is more than
+	0, it is given a string termination and passed to the check function.
+	
+5.  fgetc was used to check each letter is valid input for the check() function. fscanf would
+	return any valid strings potentially containing unwanted characters.
+
+6.  const is a type qualifier, making the qualified variable unmodifiable.
+	Doing so would give warnings if you mistakenly tried to modify the passed value
+	inside the function.
+	
+7.  I decided to go with a trie, where each node is doubly linked for easy backtracking
+	when unloading the dictionary from memory. I also added an id field, to help wth debugging.
+	Each node contains its character value, prev node (parent if first child, sibling if other)
+	next node (sibling) and child node. Lastly a bool denoting the node completes a word.
+	
+8.  My code is as fast now, as it was the first time i tried to get it working.
+	With pen and paper planning I developed my best possible solution, which took a lot 
+	of time to debug and get working properly.
+
+9.  No peformance improvements were made, all my issues were to do with broken functionality.
+
+10. I feel my code could use is removing the 'prev' node pointer to 
+	recuperate a little more memory. Also I thought maybe I could make the first tree level a table, so 
+	I dont have to navigate through each node to start traversing down, it would make loading
+	and checking quicker.
