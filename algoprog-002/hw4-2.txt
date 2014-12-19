@@ -1,0 +1,1 @@
+test7 [a, y, as, la, sa, las, lys, lysa] end

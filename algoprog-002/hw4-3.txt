@@ -1,0 +1,1 @@
+test8 [a, as, es, la, le, sa, se, ale, las, les, sel, ales, lesa, sale] end
