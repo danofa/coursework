@@ -11,7 +11,7 @@ class Sudoku {
     }
 
     public boolean verifieLigne(int i) {
-        
+
 //        int[] line = grille[i];
 //
 //        for (int x = 0; x < line.length; x++) {
@@ -21,10 +21,8 @@ class Sudoku {
 //            }
 //        }
 //        return true;
-        
-        
         return isValidLine(grille[i]);
-        
+
     }
 
     public boolean verifieColonne(int i) {
@@ -72,13 +70,73 @@ class Sudoku {
         }
     }
 
-    public boolean resousGrille() {
-        // à compléter
+    private boolean solveGrid(int r, int c) {
+
+        if(r == 9){
+            return true;
+        }
+        
+        if(grille[r][c] != 0){
+                if (c == 8) {
+                    if (solveGrid(r + 1, 0)) {
+                        return true;
+                    }
+                } else {
+                    if (solveGrid(r, c + 1)) {
+                        return true;
+                    }
+                }
+                return false;
+        }
+        
+        
+        for (int n = 1; n <= 9; n++) {
+            if (verifiePossible(r, c, n)) {
+                grille[r][c] = n;
+
+                if (c == 8) {
+                    if (solveGrid(r + 1, 0)) {
+                        return true;
+                    }
+                } else {
+                    if (solveGrid(r, c + 1)) {
+                        return true;
+                    }
+                }
+                
+                grille[r][c] = 0;
+            }
+            
+        }
         return false;
     }
 
+    public boolean resousGrille() {
+
+        solveGrid(0, 0);
+
+        return true;
+    }
+
     public int solutionUnique() {
-        // à compléter
+        int count = 0;
+        
+        int[][] origGrid = new int[9][9];
+        
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                origGrid[r][c] = grille[r][c];
+                if(grille[r][c] != 0){
+                    if(solveGrid(r, c)){
+                        System.out.println("");
+                        afficheGrille();
+                    }
+                }
+            }
+        }
+
+        
+        
         return 0;
     }
 
