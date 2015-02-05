@@ -20,7 +20,7 @@ SCRABBLE_LETTER_VALUES = {
 # Helper code
 # (you don't need to understand this helper code)
 
-WORDLIST_FILENAME = "words.txt"
+WORDLIST_FILENAME = "/home/dm/coursework/mitx6.00/week4/ProblemSet4/words.txt"
 
 def loadWords():
     """
@@ -76,7 +76,13 @@ def getWordScore(word, n):
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
     returns: int >= 0
     """
-    # TO DO ... <-- Remove this comment when you code this function
+    wordScore = 0
+    for c in word:
+        wordScore = wordScore + SCRABBLE_LETTER_VALUES[c]
+    wordScore = wordScore * len(word)
+    if len(word) == n:
+        wordScore = wordScore + 50
+    return wordScore
 
 
 
@@ -147,7 +153,10 @@ def updateHand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-    # TO DO ... <-- Remove this comment when you code this function
+    handCopy = hand.copy()
+    for c in word:
+        handCopy[c] = handCopy[c] - 1
+    return handCopy        
 
 
 
@@ -165,7 +174,18 @@ def isValidWord(word, hand, wordList):
     hand: dictionary (string -> int)
     wordList: list of lowercase strings
     """
-    # TO DO ... <-- Remove this comment when you code this function
+    wordDict = getFrequencyDict(word)
+    for c in word:
+        if c not in hand.keys():
+            return False
+        elif wordDict[c] > hand[c]:
+            return False
+            
+    if word in wordList:
+        return True
+    else:
+        return False
+                
 
 
 #
@@ -179,8 +199,10 @@ def calculateHandlen(hand):
     hand: dictionary (string-> int)
     returns: integer
     """
-    # TO DO... <-- Remove this comment when you code this function
-
+    handlen = 0
+    for c in hand:
+        handlen = handlen + hand[c]
+    return handlen
 
 
 def playHand(hand, wordList, n):
@@ -205,39 +227,60 @@ def playHand(hand, wordList, n):
       n: integer (HAND_SIZE; i.e., hand size required for additional points)
       
     """
-    # BEGIN PSEUDOCODE <-- Remove this comment when you code this function; do your coding within the pseudocode (leaving those comments in-place!)
     # Keep track of the total score
+    totalScore = 0
+    userInput = ""
     
     # As long as there are still letters left in the hand:
-    
+    while calculateHandlen(hand) > 0:
+        
         # Display the hand
+        print "Current hand: ",
+        displayHand(hand)
         
         # Ask user for input
+        userInput = raw_input("Enter word, or a \".\" to indicate that you are finished: ")
         
         # If the input is a single period:
-        
+        if userInput == ".":
+            
             # End the game (break out of the loop)
-
+            print "Goodbye! ",
+            break
             
         # Otherwise (the input is not a single period):
-        
-            # If the word is not valid:
+        else:
             
+            # If the word is not valid:
+            if isValidWord(userInput, hand, wordList) == False:
+                
                 # Reject invalid word (print a message followed by a blank line)
-
+                print "Invalid word, please try again."
+                print ""
+                
             # Otherwise (the word is valid):
-
+            else:
+                thisScore = getWordScore(userInput, n)
+                totalScore += thisScore
+                
                 # Tell the user how many points the word earned, and the updated total score, in one line followed by a blank line
-                
+                print "\"" + userInput + "\" earned " + str(thisScore) + " points. Total: " + str(totalScore) + " points."
+                print ""
+                        
                 # Update the hand 
-                
+                hand = updateHand(hand, userInput)                
 
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
-
+    if calculateHandlen(hand) == 0:
+        print "Run out of letters. ",
+    print "Total score: " + str(totalScore) + " points."
 
 #
 # Problem #5: Playing a game
 # 
+
+#wordList = loadWords()
+#playHand({'w':1, 's':1, 't':2, 'a':1, 'o':1, 'f':1}, wordList, 7)
 
 def playGame(wordList):
     """
@@ -251,10 +294,29 @@ def playGame(wordList):
  
     2) When done playing the hand, repeat from step 1    
     """
-    # TO DO ... <-- Remove this comment when you code this function
-    print "playGame not yet implemented." # <-- Remove this line when you code the function
    
-
+    lastHand = {}
+    
+    while True:
+        
+        userInput = raw_input("Enter n to deal a new hand, r to replay the last hand, or e to end game: ")
+        userInput = userInput.lower()
+        
+        if userInput == "n":
+            hand = dealHand(HAND_SIZE)
+            lastHand = hand.copy()
+            playHand(hand, wordList, HAND_SIZE)
+            
+        elif userInput == "r":
+            if not lastHand:
+                print "You have not played a hand yet. Please play a new hand first!"
+            else:
+                hand = lastHand.copy()
+                playHand(hand, wordList, HAND_SIZE)
+        elif userInput == "e":
+            break
+        else:
+            print "Invalid command."
 
 
 #
